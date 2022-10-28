@@ -3,6 +3,7 @@ package com.example.todolist;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,8 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     private LinearLayout linearLayoutNotes;
     private FloatingActionButton buttonAddNote;
-    private ArrayList<Note> notes = new ArrayList<>();
+
+    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,19 +27,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initViews();
 
-        Random random = new Random();
-        for (int i = 0; i < 20; i++){
-            Note newNote = new Note(i, "Note " + i, random.nextInt(3));
-            notes.add(newNote);
-        }
-
-        showNotes();
+        database = Database.getInstance();
 
         addNote();
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        showNotes();
+    }
 
     private void initViews(){
         linearLayoutNotes = findViewById(R.id.linearLayoutNotes);
@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNotes(){
-        for (Note note : notes){
+        linearLayoutNotes.removeAllViews();
+        for (Note note : database.getNotes()){
             View view = getLayoutInflater().inflate(
                     R.layout.note_item,
                     linearLayoutNotes,
@@ -70,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddNoteActivity.newIntent(MainActivity.this);
+                Intent intent = AddNoteActivity.newIntent(MainActivity.this);
+                startActivity(intent);
             }
         });
     }
