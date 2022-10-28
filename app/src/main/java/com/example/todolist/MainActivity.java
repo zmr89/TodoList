@@ -51,6 +51,13 @@ public class MainActivity extends AppCompatActivity {
                     R.layout.note_item,
                     linearLayoutNotes,
                     false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    database.removeNote(note.getId());
+                    showNotes();
+                }
+            });
             TextView textView = view.findViewById(R.id.textViewNote);
             textView.setText(note.getText());
             int colorResId;
