@@ -1,7 +1,10 @@
 package com.example.todolist;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +19,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private LinearLayout linearLayoutNotes;
     private FloatingActionButton buttonAddNote;
 
     private Database database;
+
+    NotesAdapter notesAdapter;
+    RecyclerView notesRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,35 @@ public class MainActivity extends AppCompatActivity {
         initViews();
 
         database = Database.getInstance();
+
+        notesAdapter = new NotesAdapter();
+        notesRecyclerView.setAdapter(notesAdapter);
+        notesAdapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
+            @Override
+            public void onNoteClick(Note note) {
+                //ToDO
+            }
+        });
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(
+                    @NonNull RecyclerView recyclerView,
+                    @NonNull RecyclerView.ViewHolder viewHolder,
+                    @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                Note note = notesAdapter.getNotes().get(position);
+                database.removeNote(note.getId());
+                showNotes();
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(notesRecyclerView);
 
         addNote();
     }
@@ -40,38 +74,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews(){
-        linearLayoutNotes = findViewById(R.id.linearLayoutNotes);
+        notesRecyclerView = findViewById(R.id.notesRecyclerView);
         buttonAddNote = findViewById(R.id.buttonAddNote);
     }
 
     private void showNotes(){
-        linearLayoutNotes.removeAllViews();
-        for (Note note : database.getNotes()){
-            View view = getLayoutInflater().inflate(
-                    R.layout.note_item,
-                    linearLayoutNotes,
-                    false);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    database.removeNote(note.getId());
-                    showNotes();
-                }
-            });
-            TextView textView = view.findViewById(R.id.textViewNote);
-            textView.setText(note.getText());
-            int colorResId;
-            switch (note.getPriority()){
-                case 0 : colorResId = android.R.color.holo_green_light;
-                break;
-                case 1 : colorResId = android.R.color.holo_orange_light;
-                    break;
-                default: colorResId = android.R.color.holo_red_light;
-            }
-            int color = ContextCompat.getColor(this, colorResId);
-            textView.setBackgroundColor(color);
-            linearLayoutNotes.addView(view);
-        }
+       notesAdapter.setNotes(database.getNotes());
     }
 
     private void addNote() {
