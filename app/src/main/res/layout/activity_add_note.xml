@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    tools:context=".AddNoteActivity">
+
+    <EditText
+        android:id="@+id/noteEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_note"
+        android:inputType="textPersonName"
+        android:textSize="16sp"
+        android:minHeight="48dp"
+        android:layout_margin="16dp"/>
+
+    <RadioGroup
+        android:id="@+id/priorityRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        android:checkedButton="@id/mediumRadioButton">
+
+        <RadioButton
+            android:id="@+id/lowRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:text="@string/low_RadioButton"
+            android:background="@android:color/holo_green_light"/>
+        <RadioButton
+            android:id="@+id/mediumRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:text="@string/medium_RadioButton"
+            android:background="@android:color/holo_orange_light"/>
+        <RadioButton
+            android:id="@+id/highRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:text="@string/high_RadioButton"
+            android:background="@android:color/holo_red_light"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:layout_margin="16dp"/>
+
+</LinearLayout>

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Todo List</string>
     <string name="add_note_button">Add note button</string>
+    <string name="enter_note">Введите текст заметки:</string>
+    <string name="low_RadioButton">Низкий</string>
+    <string name="medium_RadioButton">Средний</string>
+    <string name="high_RadioButton">Высокий</string>
+    <string name="save">Сохранить</string>
 </resources>
