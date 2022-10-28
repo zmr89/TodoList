@@ -32,7 +32,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showNotes();
+
+        addNote();
+
     }
+
+
 
     private void initViews(){
         linearLayoutNotes = findViewById(R.id.linearLayoutNotes);
@@ -59,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
             textView.setBackgroundColor(color);
             linearLayoutNotes.addView(view);
         }
+    }
 
+    private void addNote() {
+        buttonAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddNoteActivity.newIntent(MainActivity.this);
+            }
+        });
     }
 }
