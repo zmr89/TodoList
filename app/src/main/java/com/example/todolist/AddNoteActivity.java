@@ -19,12 +19,15 @@ public class AddNoteActivity extends AppCompatActivity {
     private RadioButton mediumRadioButton;
     private RadioButton highRadioButton;
     private Button saveButton;
+    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
         initViews();
+
+        database = Database.getInstance();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,10 +50,13 @@ public class AddNoteActivity extends AppCompatActivity {
     private void saveNote() {
         String noteText = noteEditText.getText().toString().trim();
         int priority = getPriority();
-        if (noteText.isEmpty()){
+        int id = database.getNotes().size();
+        if (noteText.isEmpty()) {
             Toast.makeText(this, "Введите заметку", Toast.LENGTH_SHORT).show();
         } else {
-            //startActivity
+            Note newNote = new Note(id, noteText, priority);
+            database.addNote(newNote);
+            finish();
         }
     }
 
@@ -67,9 +73,9 @@ public class AddNoteActivity extends AppCompatActivity {
         return priority;
     }
 
-    public static void newIntent(Context context){
+    public static Intent newIntent(Context context){
         Intent intent = new Intent(context, AddNoteActivity.class);
-        context.startActivity(intent);
+        return intent;
     }
 
 
