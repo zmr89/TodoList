@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,15 +22,20 @@ public class AddNoteActivity extends AppCompatActivity {
     private RadioButton mediumRadioButton;
     private RadioButton highRadioButton;
     private Button saveButton;
-    private Database database;
+
+    private NotesDatabase notesDatabase;
+
+    private Handler  handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
-        initViews();
 
-        database = Database.getInstance();
+        notesDatabase = NotesDatabase.getNotesDatabase(getApplication());
+
+
+        initViews();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,22 +58,34 @@ public class AddNoteActivity extends AppCompatActivity {
     private void saveNote() {
         String noteText = noteEditText.getText().toString().trim();
         int priority = getPriority();
-        int id = database.getNotes().size();
         if (noteText.isEmpty()) {
             Toast.makeText(this, "Введите заметку", Toast.LENGTH_SHORT).show();
         } else {
-            Note newNote = new Note(id, noteText, priority);
-            database.addNote(newNote);
-            finish();
+            Note newNote = new Note(noteText, priority);
+
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    notesDatabase.notesDAO().add(newNote);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
+                }
+            });
+            thread.start();
         }
     }
 
     private int getPriority(){
         int priority;
         if (lowRadioButton.isChecked()) {
+            Log.d("lowRadioButton",String.valueOf(lowRadioButton.isChecked()));
             priority = 0;
-        }
-        if (mediumRadioButton.isChecked()) {
+        }else if (mediumRadioButton.isChecked()) {
+            Log.d("mediumRadioButton",String.valueOf(mediumRadioButton.isChecked()));
             priority = 1;
         } else {
             priority = 2;
