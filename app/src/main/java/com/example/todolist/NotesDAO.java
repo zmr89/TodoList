@@ -2,6 +2,7 @@ package com.example.todolist;
 
 import android.content.Intent;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface NotesDAO {
 
     @Query("SELECT * FROM notes")
-    List<Note> getNotes();
+    LiveData<List<Note>> getNotes();
 
     @Insert
     void add(Note note);
