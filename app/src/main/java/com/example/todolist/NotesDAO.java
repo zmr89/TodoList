@@ -11,11 +11,14 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface NotesDAO {
 
     @Query("SELECT * FROM notes")
-    LiveData<List<Note>> getNotes();
+    List<Note> getNotes();
 
     @Insert
     void add(Note note);
